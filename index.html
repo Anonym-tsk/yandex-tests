@@ -75,11 +75,13 @@
       });
 
       $('.prev').click(function() {
-        slider3.get(0).goPrev();
+        var current = slider3.get(0).goPrev();
+        $('.current').text(current);
       });
 
       $('.next').click(function() {
-        slider3.get(0).goNext();
+        var current = slider3.get(0).goNext();
+        $('.current').text(current);
       });
     </pre>
 
@@ -90,7 +92,20 @@
       <div class="slide"><img title="Slide 4" src="http://lorempixel.com/300/250/abstract/"/></div>
     </div>
     <button class="prev">Prev</button>
+    <span class="current">0</span>
     <button class="next">Next</button>
+  </div>
+
+  <div class="sliders-block">
+    <h3>Ajax</h3>
+
+    <pre class="language-javascript">
+      $('.slider-4').slider({
+        ajax: ['ajax/1.html', 'ajax/2.html']
+      });
+    </pre>
+
+    <div class="slider-4"></div>
   </div>
 </div>
 <script>
@@ -100,21 +115,27 @@
     $('.slider-1').slider();
 
     $('.slider-2').slider({
-      items:'.item',
-      firstSlide:1,
-      width:'600px',
-      height:'200px',
-      background:'#666'
+      items: '.item',
+      firstSlide: 1,
+      width: '500px',
+      height: '200px',
+      background: '#666'
     });
 
     var slider3 = $('.slider-3').slider({
       hideControls: true
     });
     $('.prev').click(function() {
-      slider3.get(0).goPrev();
+      var current = slider3.get(0).goPrev();
+      $('.current').text(current);
     });
     $('.next').click(function() {
-      slider3.get(0).goNext();
+      var current = slider3.get(0).goNext();
+      $('.current').text(current);
+    });
+
+    $('.slider-4').slider({
+      ajax: ['ajax/1.html', 'ajax/2.html']
     });
   });
 </script>

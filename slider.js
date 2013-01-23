@@ -9,7 +9,8 @@
         width: '400px',
         height: '300px',
         background: '#fff',
-        hideControls: false
+        hideControls: false,
+        ajax: []
       }, options);
 
       this.container = $(this).addClass('slider').css({
@@ -22,69 +23,119 @@
         .addClass('slider-item')
         .innerWidth($self.options.width)
         .innerHeight($self.options.height);
-      this.currentIndex = $self.options.firstSlide;
+
+      this.localCount = $self.slides.size();
+
+      this.slideCount = this.localCount + $self.options.ajax.length;
+
+      this._cache = [];
+
+      this._getSlide = function(index) {
+        if (typeof $self._cache[index] == 'undefined') {
+          if (index < $self.localCount) {
+            $self._cache[index] = $self.slides.eq(index);
+          }
+          else {
+            if (typeof $self.controls != 'undefined') {
+              $self.controls.hide();
+            }
+
+            var ajaxIndex = index - $self.localCount;
+            var slideContent;
+            $.ajax({url: $self.options.ajax[ajaxIndex], async: false})
+              .done(function(data) {
+                slideContent = data;
+              })
+              .fail(function() {
+                slideContent = '<p>Error loading slide</p>';
+              })
+              .always(function() {
+                var $slide = $('<div/>', {html: slideContent})
+                  .addClass('slider-item')
+                  .appendTo($self.container)
+                  .innerWidth($self.options.width)
+                  .innerHeight($self.options.height);
+                $self._cache[index] = $slide;
+
+                if (typeof $self.controls != 'undefined') {
+                  $self.controls.show();
+                }
+              });
+          }
+        }
+        return $self._cache[index];
+      };
 
       this.goToSlide = function(index) {
-        if (typeof index == 'undefined') {
-          index = $self.options.firstSlide;
+        if (typeof $self.currentIndex != 'undefined') {
+          var oldSlide = $self._getSlide($self.currentIndex);
+          if (oldSlide) {
+            oldSlide.fadeOut(200);
+          }
+        }
+        var slide = $self._getSlide(index);
+        if (slide) {
+          slide.fadeIn(200);
+        }
+        if (typeof $self.slideSelector != 'undefined') {
+          $self.slideSelector.val(index);
         }
         $self.currentIndex = parseInt(index);
-        $self.slides.fadeOut(200);
-        $self.slides.eq(index).fadeIn(200);
-        $self.slideSelector.val(index);
-        return $self;
+        return $self.currentIndex;
       };
 
       this.goNext = function() {
         var index = $self.currentIndex + 1;
-        if (index < $self.slides.size()) {
-          $self.goToSlide(index);
+        if (index < this.slideCount) {
+          return $self.goToSlide(index);
         }
+        return $self.currentIndex;
       };
 
       this.goPrev = function() {
         var index = $self.currentIndex - 1;
         if (index >= 0) {
-          $self.goToSlide(index);
+          return $self.goToSlide(index);
         }
+        return $self.currentIndex;
       };
 
       this.createControls = function() {
-        var $controls = $('<div/>', {class: 'slider-controls'});
+        $self.controls = $('<div/>', {class: 'slider-controls'});
 
-        $self.nextButton = $('<a/>', {class: 'slider-next', html: '&rarr;', href: '#next'})
-          .click(function(event) {
-            $self.goNext();
-            event.preventDefault();
-          });
-
-        $self.prevButton = $('<a/>', {class: 'slider-prev', html: '&larr;', href: '#prev'})
+        $('<a/>', {class: 'slider-prev', html: '&larr;', href: '#prev'})
           .click(function(event) {
             $self.goPrev();
             event.preventDefault();
-          });
+          })
+          .appendTo($self.controls);
 
         $self.slideSelector = $('<select/>', {class: 'slider-select'})
           .change(function() {
             var index = $(this).val();
             $self.goToSlide(index);
-          });
-        $self.slides.each(function() {
-          var index = $self.slides.index(this);
-          $('<option/>', {value: index, text: index + 1}).appendTo($self.slideSelector);
-        });
+          })
+          .appendTo($self.controls);
 
-        if (!this.options.hideControls) {
-          $self.prevButton.appendTo($controls);
-          $self.slideSelector.appendTo($controls);
-          $self.nextButton.appendTo($controls);
+        for (var i = 0; i < $self.slideCount; i++) {
+          $('<option/>', {value: i, text: i + 1}).appendTo($self.slideSelector);
         }
 
-        $controls.appendTo($self.container);
-        return $self;
+        $('<a/>', {class: 'slider-next', html: '&rarr;', href: '#next'})
+          .click(function(event) {
+            $self.goNext();
+            event.preventDefault();
+          })
+          .appendTo($self.controls);
+
+        $self.controls.appendTo($self.container);
       };
 
-      this.createControls().goToSlide();
+      if (!this.options.hideControls) {
+        this.createControls();
+      }
+
+      this.goToSlide(this.options.firstSlide);
     });
   };
 })(jQuery);
