@@ -70,12 +70,12 @@
       });
 
       $('.prev').click(function() {
-        var current = slider3.get(0).goPrev();
+        var current = slider3.goPrev();
         $('.current').text(current);
       });
 
       $('.next').click(function() {
-        var current = slider3.get(0).goNext();
+        var current = slider3.goNext();
         $('.current').text(current);
       });
     </pre>
@@ -121,11 +121,11 @@
       hideControls: true
     });
     $('.prev').click(function() {
-      var current = slider3.get(0).goPrev();
+      var current = slider3.goPrev();
       $('.current').text(current);
     });
     $('.next').click(function() {
-      var current = slider3.get(0).goNext();
+      var current = slider3.goNext();
       $('.current').text(current);
     });
 
