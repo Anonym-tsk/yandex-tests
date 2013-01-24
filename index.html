@@ -30,20 +30,13 @@
   <div class="sliders-block">
     <h3>Default settings</h3>
 
-    <pre class="language-javascript">$('.slider-1').slider();</pre>
+    <pre class="language-javascript">$('#slider-1').slider();</pre>
 
-    <div class="slider-1">
+    <div id="slider-1">
       <div class="slide" style="background: #90ee90">Slide 1</div>
       <div class="slide" style="background: #add8e6">Slide 2</div>
       <div class="slide" style="background: #ffa07a">Slide 3</div>
       <div class="slide" style="background: #e0ffff">Slide 4</div>
-    </div>
-
-    <div class="slider-1">
-      <div class="slide"><img title="Slide 1" src="http://lorempixel.com/300/200/abstract/"/></div>
-      <div class="slide"><img title="Slide 2" src="http://lorempixel.com/100/200/abstract/"/></div>
-      <div class="slide"><img title="Slide 3" src="http://lorempixel.com/350/100/abstract/"/></div>
-      <div class="slide"><img title="Slide 4" src="http://lorempixel.com/300/250/abstract/"/></div>
     </div>
   </div>
 
@@ -51,7 +44,7 @@
     <h3>Custom settings</h3>
 
     <pre class="language-javascript">
-      $('.slider-2').slider({
+      $('#slider-2').slider({
         items: '.item',
         firstSlide: 1,
         width: '500px',
@@ -60,13 +53,7 @@
       });
     </pre>
 
-    <div class="slider-2">
-      <div class="item" style="background: #90ee90">Slide 1</div>
-      <div class="item" style="background: #add8e6">Slide 2</div>
-      <div class="item" style="background: #ffa07a">Slide 3</div>
-    </div>
-
-    <div class="slider-2">
+    <div id="slider-2">
       <div class="item"><img title="Slide 1" src="http://lorempixel.com/100/100/abstract/"/></div>
       <div class="item"><img title="Slide 2" src="http://lorempixel.com/460/100/abstract/"/></div>
       <div class="item"><img title="Slide 3" src="http://lorempixel.com/400/160/abstract/"/></div>
@@ -78,7 +65,7 @@
     <h3>Custom controls</h3>
 
     <pre class="language-javascript">
-      var slider3 = $('.slider-3').slider({
+      var slider3 = $('#slider-3').slider({
         hideControls: true
       });
 
@@ -93,7 +80,7 @@
       });
     </pre>
 
-    <div class="slider-3">
+    <div id="slider-3">
       <div class="slide"><img title="Slide 1" src="http://lorempixel.com/300/200/abstract/"/></div>
       <div class="slide"><img title="Slide 2" src="http://lorempixel.com/100/200/abstract/"/></div>
       <div class="slide"><img title="Slide 3" src="http://lorempixel.com/350/100/abstract/"/></div>
@@ -108,21 +95,21 @@
     <h3>Ajax</h3>
 
     <pre class="language-javascript">
-      $('.slider-4').slider({
+      $('#slider-4').slider({
         ajax: ['ajax/1.html', 'ajax/2.html']
       });
     </pre>
 
-    <div class="slider-4"></div>
+    <div id="slider-4"></div>
   </div>
 </div>
 <script>
   $(document).ready(function() {
     $.SyntaxHighlighter.init();
 
-    $('.slider-1').slider();
+    $('#slider-1').slider();
 
-    $('.slider-2').slider({
+    $('#slider-2').slider({
       items: '.item',
       firstSlide: 1,
       width: '500px',
@@ -130,7 +117,7 @@
       background: '#666'
     });
 
-    var slider3 = $('.slider-3').slider({
+    var slider3 = $('#slider-3').slider({
       hideControls: true
     });
     $('.prev').click(function() {
@@ -142,7 +129,7 @@
       $('.current').text(current);
     });
 
-    $('.slider-4').slider({
+    $('#slider-4').slider({
       ajax: ['ajax/1.html', 'ajax/2.html']
     });
   });

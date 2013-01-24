@@ -61,10 +61,10 @@ h1 {
   padding: 10px;
   text-align: center;
 }
-.slider-1, .slider-3 {
+#slider-1, #slider-3 {
   line-height: 280px;
 }
-.slider-2 {
+#slider-2 {
   line-height: 180px;
 }
 .slider img {

@@ -1,5 +1,63 @@
 (function($) {
+  // Проверяет поддержку полноэкранного режима
+  $.support.fullScreen = function() {
+    return ('requestFullscreen' in document.documentElement) ||
+      ('mozRequestFullScreen' in document.documentElement && document.mozFullScreenEnabled) ||
+      ('webkitRequestFullScreen' in document.documentElement);
+  }();
+
+  // Возвращает статус полноэкранного режима
+  $.fullScreenStatus = function() {
+    return document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen;
+  };
+
+  // Выходит из полноэкранного режима
+  $.fullScreenExit = function() {
+    if (!$.support.fullScreen || !$.fullScreenStatus()) {
+      return false;
+    }
+
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+    else if (document.mozCancelFullScreen) {
+      document.mozCancelFullScreen();
+    }
+    else if (document.webkitCancelFullScreen) {
+      document.webkitCancelFullScreen();
+    }
+    return true;
+  };
+
+  // Показывает элемент в полноэкранном режиме
+  $.fn.fullScreen = function() {
+    if(!$.support.fullScreen || this.length !== 1) {
+      return this;
+    }
+
+    if($.fullScreenStatus()) {
+      $.fullScreenExit();
+      return this;
+    }
+
+    var element = this.get(0);
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    }
+    else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    }
+    else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    }
+    return this;
+  };
+
   $.fn.slider = function(options) {
+    if (this.length !== 1) {
+      return this;
+    }
+
     return this.each(function() {
       var $self = this;
 
@@ -20,7 +78,9 @@
         width: $self.options.width,
         height: $self.options.height,
         background: $self.options.background
-      });
+      }).click(function() {
+          $self.container.fullScreen();
+        });
 
       // Настраиваем слайды
       this.slides = $self.container.children($self.options.items)
@@ -131,6 +191,7 @@
           click: function(event) {
             $self.goPrev();
             event.preventDefault();
+            event.stopPropagation();
           }
         }).appendTo($self.controls);
 
@@ -156,6 +217,7 @@
           click: function(event) {
             $self.goNext();
             event.preventDefault();
+            event.stopPropagation();
           }
         }).appendTo($self.controls);
 
