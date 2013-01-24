@@ -120,32 +120,44 @@
 
       // Создает стандартные контролы
       this._createControls = function() {
-        $self.controls = $('<div/>', {class: 'slider-controls'});
+        $self.controls = $('<div/>', {
+          'class': 'slider-controls'
+        });
 
-        $('<a/>', {class: 'slider-prev', html: '&larr;', href: '#prev'})
-          .click(function(event) {
+        $('<a/>', {
+          'class': 'slider-prev',
+          'href': '#prev',
+          html: '&larr;',
+          click: function(event) {
             $self.goPrev();
             event.preventDefault();
-          })
-          .appendTo($self.controls);
+          }
+        }).appendTo($self.controls);
 
-        $self.slideSelector = $('<select/>', {class: 'slider-select'})
-          .change(function() {
+        $self.slideSelector = $('<select/>', {
+          'class': 'slider-select',
+          change: function() {
             var index = $(this).val();
             $self.goToSlide(index);
-          })
-          .appendTo($self.controls);
+          }
+        }).appendTo($self.controls);
 
         for (var i = 0; i < $self.slideCount; i++) {
-          $('<option/>', {value: i, text: i + 1}).appendTo($self.slideSelector);
+          $('<option/>', {
+            val: i,
+            text: i + 1
+          }).appendTo($self.slideSelector);
         }
 
-        $('<a/>', {class: 'slider-next', html: '&rarr;', href: '#next'})
-          .click(function(event) {
+        $('<a/>', {
+          'class': 'slider-next',
+          'href': '#next',
+          html: '&rarr;',
+          click: function(event) {
             $self.goNext();
             event.preventDefault();
-          })
-          .appendTo($self.controls);
+          }
+        }).appendTo($self.controls);
 
         $self.controls.appendTo($self.container);
       };
