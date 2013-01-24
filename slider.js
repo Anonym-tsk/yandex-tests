@@ -26,9 +26,6 @@
     else if (document.webkitCancelFullScreen) {
       document.webkitCancelFullScreen();
     }
-
-    $('.fullscreen').removeClass('fullscreen');
-
     return true;
   };
 
@@ -39,7 +36,7 @@
     }
 
     // Выходим из полноэкранного режима, если уже в нем
-    if($.fullScreenStatus()) {
+    if ($.fullScreenStatus()) {
       $.fullScreenExit();
       return this;
     }
@@ -55,9 +52,18 @@
       element.webkitRequestFullscreen();
     }
 
-    this.addClass('fullscreen');
+    var $self = this;
+    $(document).on('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
+      if ($.fullScreenStatus()) {
+        $self.addClass('fullscreen');
+      }
+      else {
+        $(document).off('fullscreenchange mozfullscreenchange webkitfullscreenchange');
+        $self.removeClass('fullscreen');
+      }
+    });
 
-    return this;
+    return $self;
   };
 
   // Слайдер
@@ -222,16 +228,18 @@
         }
       }).appendTo($self.controls);
 
-      $('<a/>', {
-        'class': 'slider-fullscreen',
-        'href': '#fullscreen',
-        html: '#',
-        click: function(event) {
-          $self.container.fullScreen();
-          event.preventDefault();
-          event.stopPropagation();
-        }
-      }).appendTo($self.controls);
+      if ($.support.fullScreen) {
+        $('<a/>', {
+          'class': 'slider-fullscreen',
+          'href': '#fullscreen',
+          html: '#',
+          click: function(event) {
+            $self.container.fullScreen();
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }).appendTo($self.controls);
+      }
 
       $self.controls.appendTo($self.container);
     };
