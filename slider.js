@@ -26,6 +26,9 @@
     else if (document.webkitCancelFullScreen) {
       document.webkitCancelFullScreen();
     }
+
+    $('.fullscreen').removeClass('fullscreen');
+
     return true;
   };
 
@@ -35,6 +38,7 @@
       return this;
     }
 
+    // Выходим из полноэкранного режима, если уже в нем
     if($.fullScreenStatus()) {
       $.fullScreenExit();
       return this;
@@ -50,6 +54,9 @@
     else if (element.webkitRequestFullscreen) {
       element.webkitRequestFullscreen();
     }
+
+    this.addClass('fullscreen');
+
     return this;
   };
 
@@ -78,15 +85,10 @@
       width: $self.options.width,
       height: $self.options.height,
       background: $self.options.background
-    }).click(function() {
-        $self.container.fullScreen();
-      });
+    });
 
     // Настраиваем слайды
-    this.slides = $self.container.children($self.options.items)
-      .addClass('slider-item')
-      .innerWidth($self.options.width)
-      .innerHeight($self.options.height);
+    this.slides = $self.container.children($self.options.items).addClass('slider-item')
 
     // Количество слайдов уже в слайдере
     this.localCount = $self.slides.size();
@@ -121,11 +123,10 @@
             })
             .always(function() {
               // Добавляем новый слайд
-              var $slide = $('<div/>', {html: slideContent})
-                .addClass('slider-item')
-                .appendTo($self.container)
-                .innerWidth($self.options.width)
-                .innerHeight($self.options.height);
+              var $slide = $('<div/>', {
+                'class': 'slider-item',
+                'html': slideContent
+              }).appendTo($self.container);
               $self._cache[index] = $slide;
 
               // Возвращаем контролы в любом случае
@@ -216,6 +217,17 @@
         html: '&rarr;',
         click: function(event) {
           $self.goNext();
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }).appendTo($self.controls);
+
+      $('<a/>', {
+        'class': 'slider-fullscreen',
+        'href': '#fullscreen',
+        html: '#',
+        click: function(event) {
+          $self.container.fullScreen();
           event.preventDefault();
           event.stopPropagation();
         }
