@@ -1,6 +1,7 @@
 .slider {
   position: relative;
   border: 1px solid #ccc;
+  overflow: hidden;
 }
 .slider.fullscreen {
   position: fixed;

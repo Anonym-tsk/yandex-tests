@@ -83,7 +83,16 @@
       background: '#fff', // Фон слайдера
       hideControls: false, // Скрыть элементы управления
       ajax: [], // Ссылки на слайды, которые должны загружаться Ajax'ом
-      ajaxCache: true // Кэшировать ли Ajax ответы
+      ajaxCache: true, // Кэшировать ли Ajax ответы
+      // Переход между слайдами
+      effect: function(oldSlide, newSlide, index) {
+        if (oldSlide) {
+          oldSlide.fadeOut(200);
+        }
+        if (newSlide) {
+          newSlide.fadeIn(200);
+        }
+      }
     }, options);
 
     // Настраиваем контейнер
@@ -147,18 +156,12 @@
 
     // Показывает слайд по индексу
     this.goToSlide = function(index) {
-      // Если это не первый показ слайда - прячем текущий слайд
-      if (typeof $self.currentIndex != 'undefined') {
-        var oldSlide = $self._getSlide($self.currentIndex);
-        if (oldSlide) {
-          oldSlide.fadeOut(200);
-        }
-      }
-      // Показываем новый слайд
-      var slide = $self._getSlide(index);
-      if (slide) {
-        slide.fadeIn(200);
-      }
+      var oldSlide = typeof $self.currentIndex != 'undefined'
+        ? $self._getSlide($self.currentIndex)
+        : null;
+      var newSlide = $self._getSlide(index);
+      $self.options.effect(oldSlide, newSlide, index);
+
       // Изменяем значение в селекте, если контролы не скрыты
       if (typeof $self.slideSelector != 'undefined') {
         $self.slideSelector.val(index);
