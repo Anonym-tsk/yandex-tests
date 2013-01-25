@@ -53,15 +53,15 @@
     }
 
     var $self = this;
-    $(document).on('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
+    var fullScreenChange = function() {
       if ($.fullScreenStatus()) {
         $self.addClass('fullscreen');
       }
       else {
-        $(document).off('fullscreenchange mozfullscreenchange webkitfullscreenchange');
-        $self.removeClass('fullscreen');
+        $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', fullScreenChange).removeClass('fullscreen');
       }
-    });
+    };
+    $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', fullScreenChange);
 
     return $self;
   };
@@ -194,6 +194,7 @@
       $('<a/>', {
         'class': 'slider-prev',
         'href': '#prev',
+        'title': 'Previous slide (←)',
         html: '&larr;',
         click: function(event) {
           $self.goPrev();
@@ -220,6 +221,7 @@
       $('<a/>', {
         'class': 'slider-next',
         'href': '#next',
+        'title': 'Next slide (→)',
         html: '&rarr;',
         click: function(event) {
           $self.goNext();
@@ -232,8 +234,40 @@
         $('<a/>', {
           'class': 'slider-fullscreen',
           'href': '#fullscreen',
+          'title': 'Fullscreen mode (F)',
           html: '#',
           click: function(event) {
+            if (!$.fullScreenStatus()) {
+              var keyMaps = function(event) {
+                var RIGHT = 39,
+                  LEFT = 37,
+                  F = 70,
+                  SPACE = 32;
+                switch (event.which) {
+                  case RIGHT:
+                  case SPACE:
+                    $self.goNext();
+                    break;
+                  case LEFT:
+                    $self.goPrev();
+                    break;
+                  case F:
+                    $self.container.fullScreen();
+                    break;
+                }
+              };
+
+              var disableKeyMaps = function() {
+                if (!$.fullScreenStatus()) {
+                  $(document).unbind('keyup', keyMaps);
+                  $self.container.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
+                }
+              };
+
+              $(document).bind('keyup', keyMaps);
+              $self.container.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
+            }
+
             $self.container.fullScreen();
             event.preventDefault();
             event.stopPropagation();
