@@ -1,4 +1,49 @@
 (function($) {
+
+  /**************** Трансформации ****************/
+
+  // Проверка поддержки CSS трансформаций
+  $.support.transform = function() {
+    return ('transformProperty' in document.documentElement.style) ||
+      ('WebkitTransform' in document.documentElement.style) ||
+      ('MozTransform' in document.documentElement.style) ||
+      ('OTransform' in document.documentElement.style) ||
+      ('msTransform' in document.documentElement.style);
+  }();
+
+  // Масштабирует объект
+  $.fn.transformScale = function(multiplier) {
+    if ($.support.transform) {
+      var prefix;
+      if ($.browser.webkit) prefix = '-webkit-';
+      else if ($.browser.opera) prefix = '-o-';
+      else if ($.browser.mozilla) prefix = '-moz-';
+      else if ($.browser.msie) prefix = '-ms-';
+
+      return this.each(function() {
+        var $this = $(this);
+        $this.css(prefix +'transform', 'scale('+ multiplier +')');
+        $this.css('transform', 'scale('+ multiplier +')');
+        $this.css(prefix +'transform-origin', 'top left');
+        $this.css('transform-origin', 'top left');
+      });
+    }
+    else {
+      return this.each(function() {
+        this.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11='1.0', sizingmethod='auto expand')";
+        this.filters.item(0).M11 *= multiplier;
+        this.filters.item(0).M12 *= multiplier;
+        this.filters.item(0).M21 *= multiplier;
+        this.filters.item(0).M22 *= multiplier;
+      });
+    }
+  };
+
+  /***********************************************/
+
+
+  /****************** FullScreen *****************/
+
   // Проверяет поддержку полноэкранного режима
   $.support.fullScreen = function() {
     return ('requestFullscreen' in document.documentElement) ||
@@ -66,7 +111,11 @@
     return $self;
   };
 
-  // Слайдер
+  /***********************************************/
+
+
+  /****************** Слайдер ********************/
+
   $.fn.slider = function(options) {
     if (this.length !== 1) {
       return this;
@@ -150,7 +199,28 @@
               }
             });
         }
-      }
+
+        // Хак для картинок
+        // TODO: учитывать padding у слайда
+        var max = parseInt($self.container.css('max-width'));
+        var setImageSize = function(image) {
+          var width = image.naturalWidth ? image.naturalWidth : function() {
+            var img = new Image();
+            img.src = image.src;
+            return img.width;
+          }();
+          $(image).addClass('loaded').width(parseInt(width / max * 100) + '%');
+        };
+        $self._cache[index].find('img:not(.loaded)').each(function() {
+          if (this.complete) {
+            setImageSize(this);
+          }
+        });
+        $self._cache[index].find('img:not(.loaded)').bind('load', function() {
+          setImageSize(this);
+        });
+      };
+
       return $self._cache[index];
     };
 
@@ -291,4 +361,7 @@
 
     return this;
   };
+
+  /***********************************************/
+
 })(jQuery);
