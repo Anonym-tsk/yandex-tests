@@ -6,6 +6,12 @@
       return this;
     }
 
+    var $self = this;
+
+    // Оборачиваем слайды в контейнер
+    $self.wrapInner('<div class="slider-container"/>');
+    this.container = $self.children('.slider-container');
+
     // Настройки по-умолчанию
     this.options = $.extend({
       items: '.slide', // Селектор элементов-слайдов
@@ -28,21 +34,40 @@
       }
     }, options);
 
+    this._scale = function(width) {
+//      if (width / height > $self.options.proportions.w / $self.options.proportions.h) {
+//        // Ширина достаточная, трансформируем вписывая по высоте
+//      }
+//      else {
+//        // Ширины не хватает, трансвормируем вписывая по ширине с уменьшением высоты
+//      }
+
+      var multiplier = width / $self.options.originalWidth;
+      $self.container.transformScale(multiplier);
+      return multiplier;
+    };
+
     // Настраиваем контейнер
-    var $self = this.addClass('slider').css({
-      width: this.options.width + 'px',
-      height: (this.options.width * this.options.proportions.h / this.options.proportions.w) + 'px',
-      background: this.options.background
+    this.container.css({
+      width: $self.options.originalWidth + 'px',
+      height: ($self.options.originalWidth * $self.options.proportions.h / $self.options.proportions.w) + 'px'
     });
 
+    // Настраиваем слайдер
+    this.addClass('slider').css({
+      width: $self.options.width + 'px',
+      height: ($self.options.width * $self.options.proportions.h / $self.options.proportions.w) + 'px',
+      background: $self.options.background
+    })._scale($self.options.width);
+
     // Настраиваем слайды
-    this.slides = $self.children($self.options.items).addClass('slider-item');
+    this.slides = $self.container.children($self.options.items).addClass('slider-item');
 
     // Количество слайдов уже в слайдере
     this.localCount = $self.slides.size();
 
     // Количество слайдов всего (+Ajax)
-    this.slideCount = this.localCount + $self.options.ajax.length;
+    this.slideCount = $self.localCount + $self.options.ajax.length;
 
     // Для кэша слайдов
     this._cache = [];
@@ -74,7 +99,7 @@
               var $slide = $('<div/>', {
                 'class': 'slider-item',
                 'html': slideContent
-              }).appendTo($self);
+              }).appendTo($self.container);
               $self._cache[index] = $slide;
 
               // Возвращаем контролы в любом случае

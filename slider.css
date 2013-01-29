@@ -6,8 +6,8 @@
   font-size: 30px;
   line-height: 1.24em;
   color: #333;
-  max-height: 750px;
-  max-width: 1000px;
+}
+.slider-container {
   -webkit-transform-origin: top left;
   -moz-transform-origin: top left;
   -ms-transform-origin: top left;
