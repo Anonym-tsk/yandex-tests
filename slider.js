@@ -10,8 +10,9 @@
     this.options = $.extend({
       items: '.slide', // Селектор элементов-слайдов
       firstSlide: 0, // Индекс первого слайда
-      width: '400px', // Ширина слайдера
-      height: '300px', // Высота слайдера
+      width: 400, // Ширина слайдера при отображении на странице (px)
+      originalWidth: 1000, // Ширина слайда (px)
+      proportions: {w: 4, h: 3}, // Пропорции слайдера
       background: '#fff', // Фон слайдера
       hideControls: false, // Скрыть элементы управления
       ajax: [], // Ссылки на слайды, которые должны загружаться Ajax'ом
@@ -29,8 +30,8 @@
 
     // Настраиваем контейнер
     var $self = this.addClass('slider').css({
-      width: this.options.width,
-      height: this.options.height,
+      width: this.options.width + 'px',
+      height: (this.options.width * this.options.proportions.h / this.options.proportions.w) + 'px',
       background: this.options.background
     });
 
@@ -193,15 +194,21 @@
                 }
               };
 
-              var disableKeyMaps = function() {
+              var windowResize = function(event) {
+
+              };
+
+              var disableFullscreenEvents = function() {
                 if (!$.fullScreenStatus()) {
                   $(document).unbind('keyup', keyMaps);
-                  $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
+                  $(window).unbind('resize', windowResize);
+                  $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableFullscreenEvents);
                 }
               };
 
               $(document).bind('keyup', keyMaps);
-              $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
+              $(window).bind('resize', windowResize);
+              $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableFullscreenEvents);
             }
 
             $self.fullScreen();
