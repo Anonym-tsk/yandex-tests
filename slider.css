@@ -8,14 +8,19 @@
   color: #333;
   max-height: 750px;
   max-width: 1000px;
+  -webkit-transform-origin: top left;
+  -moz-transform-origin: top left;
+  -ms-transform-origin: top left;
+  -o-transform-origin: top left;
+  transform-origin: top left;
 }
 .slider.fullscreen {
   position: fixed;
-  top: 50%;
+  top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  margin: -375px auto 0 auto;
+  margin: 0 auto;
   width: auto !important;
   height: auto !important;
   border: none;

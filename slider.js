@@ -1,127 +1,10 @@
 (function($) {
-
-  /**************** Трансформации ****************/
-
-  // Проверка поддержки CSS трансформаций
-  $.support.transform = function() {
-    return ('transformProperty' in document.documentElement.style) ||
-      ('WebkitTransform' in document.documentElement.style) ||
-      ('MozTransform' in document.documentElement.style) ||
-      ('OTransform' in document.documentElement.style) ||
-      ('msTransform' in document.documentElement.style);
-  }();
-
-  // Масштабирует объект
-  $.fn.transformScale = function(multiplier) {
-    if ($.support.transform) {
-      var prefix;
-      if ($.browser.webkit) prefix = '-webkit-';
-      else if ($.browser.opera) prefix = '-o-';
-      else if ($.browser.mozilla) prefix = '-moz-';
-      else if ($.browser.msie) prefix = '-ms-';
-
-      return this.each(function() {
-        var $this = $(this);
-        $this.css(prefix +'transform', 'scale('+ multiplier +')');
-        $this.css('transform', 'scale('+ multiplier +')');
-        $this.css(prefix +'transform-origin', 'top left');
-        $this.css('transform-origin', 'top left');
-      });
-    }
-    else {
-      return this.each(function() {
-        this.style.filter = "progid:DXImageTransform.Microsoft.Matrix(M11='1.0', sizingmethod='auto expand')";
-        this.filters.item(0).M11 *= multiplier;
-        this.filters.item(0).M12 *= multiplier;
-        this.filters.item(0).M21 *= multiplier;
-        this.filters.item(0).M22 *= multiplier;
-      });
-    }
-  };
-
-  /***********************************************/
-
-
-  /****************** FullScreen *****************/
-
-  // Проверяет поддержку полноэкранного режима
-  $.support.fullScreen = function() {
-    return ('requestFullscreen' in document.documentElement) ||
-      ('mozRequestFullScreen' in document.documentElement && document.mozFullScreenEnabled) ||
-      ('webkitRequestFullScreen' in document.documentElement);
-  }();
-
-  // Возвращает статус полноэкранного режима
-  $.fullScreenStatus = function() {
-    return document.fullscreen || document.mozFullScreen || document.webkitIsFullScreen;
-  };
-
-  // Выходит из полноэкранного режима
-  $.fullScreenExit = function() {
-    if (!$.support.fullScreen || !$.fullScreenStatus()) {
-      return false;
-    }
-
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-    else if (document.mozCancelFullScreen) {
-      document.mozCancelFullScreen();
-    }
-    else if (document.webkitCancelFullScreen) {
-      document.webkitCancelFullScreen();
-    }
-    return true;
-  };
-
-  // Показывает элемент в полноэкранном режиме
-  $.fn.fullScreen = function() {
-    if(!$.support.fullScreen || this.length !== 1) {
-      return this;
-    }
-
-    // Выходим из полноэкранного режима, если уже в нем
-    if ($.fullScreenStatus()) {
-      $.fullScreenExit();
-      return this;
-    }
-
-    var element = this.get(0);
-    if (element.requestFullscreen) {
-      element.requestFullscreen();
-    }
-    else if (element.mozRequestFullScreen) {
-      element.mozRequestFullScreen();
-    }
-    else if (element.webkitRequestFullscreen) {
-      element.webkitRequestFullscreen();
-    }
-
-    var $self = this;
-    var fullScreenChange = function() {
-      if ($.fullScreenStatus()) {
-        $self.addClass('fullscreen');
-      }
-      else {
-        $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', fullScreenChange).removeClass('fullscreen');
-      }
-    };
-    $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', fullScreenChange);
-
-    return $self;
-  };
-
-  /***********************************************/
-
-
   /****************** Слайдер ********************/
 
   $.fn.slider = function(options) {
     if (this.length !== 1) {
       return this;
     }
-
-    var $self = this;
 
     // Настройки по-умолчанию
     this.options = $.extend({
@@ -145,14 +28,14 @@
     }, options);
 
     // Настраиваем контейнер
-    this.container = $(this).addClass('slider').css({
-      width: $self.options.width,
-      height: $self.options.height,
-      background: $self.options.background
+    var $self = this.addClass('slider').css({
+      width: this.options.width,
+      height: this.options.height,
+      background: this.options.background
     });
 
     // Настраиваем слайды
-    this.slides = $self.container.children($self.options.items).addClass('slider-item')
+    this.slides = $self.children($self.options.items).addClass('slider-item');
 
     // Количество слайдов уже в слайдере
     this.localCount = $self.slides.size();
@@ -190,7 +73,7 @@
               var $slide = $('<div/>', {
                 'class': 'slider-item',
                 'html': slideContent
-              }).appendTo($self.container);
+              }).appendTo($self);
               $self._cache[index] = $slide;
 
               // Возвращаем контролы в любом случае
@@ -199,26 +82,6 @@
               }
             });
         }
-
-        // Хак для картинок
-        // TODO: учитывать padding у слайда
-        var max = parseInt($self.container.css('max-width'));
-        var setImageSize = function(image) {
-          var width = image.naturalWidth ? image.naturalWidth : function() {
-            var img = new Image();
-            img.src = image.src;
-            return img.width;
-          }();
-          $(image).addClass('loaded').width(parseInt(width / max * 100) + '%');
-        };
-        $self._cache[index].find('img:not(.loaded)').each(function() {
-          if (this.complete) {
-            setImageSize(this);
-          }
-        });
-        $self._cache[index].find('img:not(.loaded)').bind('load', function() {
-          setImageSize(this);
-        });
       };
 
       return $self._cache[index];
@@ -325,7 +188,7 @@
                     $self.goPrev();
                     break;
                   case F:
-                    $self.container.fullScreen();
+                    $self.fullScreen();
                     break;
                 }
               };
@@ -333,22 +196,22 @@
               var disableKeyMaps = function() {
                 if (!$.fullScreenStatus()) {
                   $(document).unbind('keyup', keyMaps);
-                  $self.container.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
+                  $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
                 }
               };
 
               $(document).bind('keyup', keyMaps);
-              $self.container.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
+              $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableKeyMaps);
             }
 
-            $self.container.fullScreen();
+            $self.fullScreen();
             event.preventDefault();
             event.stopPropagation();
           }
         }).appendTo($self.controls);
       }
 
-      $self.controls.appendTo($self.container);
+      $self.controls.appendTo($self);
     };
 
     // Создаем контролы
@@ -363,5 +226,4 @@
   };
 
   /***********************************************/
-
 })(jQuery);
