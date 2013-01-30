@@ -264,30 +264,47 @@
           $self.controls.show();
         });
       }
+    }
 
-      if ($.support.fullScreen) {
-        var keyMaps = function(event) {
-          var RIGHT = 39, LEFT = 37, F = 70, SPACE = 32;
-          switch (event.which) {
-            case RIGHT:
-            case SPACE:
-              $self.goNext();
-              event.preventDefault();
-              break;
-            case LEFT:
-              $self.goPrev();
-              event.preventDefault();
-              break;
-            case F:
-              $self.fullScreen();
-              event.preventDefault();
-              break;
-          }
-        };
+    if ($.support.fullScreen) {
+      var keyMaps = function(event) {
+        var RIGHT = 39, LEFT = 37, F = 70, SPACE = 32;
+        switch (event.which) {
+          case RIGHT:
+          case SPACE:
+            $self.goNext();
+            event.preventDefault();
+            break;
+          case LEFT:
+            $self.goPrev();
+            event.preventDefault();
+            break;
+          case F:
+            $self.fullScreen();
+            event.preventDefault();
+            break;
+        }
+      };
 
-        var windowResize = function() {
-          var width = $self.width();
-          var height = $self.height();
+      var windowResize = function() {
+        var width = $self.width();
+        var height = $self.height();
+
+        if (width / height > $self.options.proportions) {
+          $self._scale(height * $self.options.proportions);
+        }
+        else {
+          $self._scale(width);
+        }
+      };
+
+      $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
+        if ($.fullScreenStatus()) {
+          $(document).bind('keyup', keyMaps);
+          $(window).bind('resize', windowResize);
+
+          var width = $(window).width();
+          var height = $(window).height();
 
           if (width / height > $self.options.proportions) {
             $self._scale(height * $self.options.proportions);
@@ -295,30 +312,13 @@
           else {
             $self._scale(width);
           }
-        };
-
-        $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
-          if ($.fullScreenStatus()) {
-            $(document).bind('keyup', keyMaps);
-            $(window).bind('resize', windowResize);
-
-            var width = $(window).width();
-            var height = $(window).height();
-
-            if (width / height > $self.options.proportions) {
-              $self._scale(height * $self.options.proportions);
-            }
-            else {
-              $self._scale(width);
-            }
-          }
-          else {
-            $(document).unbind('keyup', keyMaps);
-            $(window).unbind('resize', windowResize);
-            $self._scale($self.options.width);
-          }
-        });
-      }
+        }
+        else {
+          $(document).unbind('keyup', keyMaps);
+          $(window).unbind('resize', windowResize);
+          $self._scale($self.options.width);
+        }
+      });
     }
 
     // Показываем первый слайд
