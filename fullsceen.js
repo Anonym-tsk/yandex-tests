@@ -31,6 +31,29 @@
     return true;
   };
 
+  // Возвращает элемент, находящийся в полноэкранном режиме
+  $.fullScreenElement = function() {
+    if ('fullscreenElement' in document) {
+      return document.fullscreenElement;
+    }
+    if ('mozFullScreenElement' in document) {
+      return document.mozFullScreenElement;
+    }
+    if ('webkitCurrentFullScreenElement' in document) {
+      return document.webkitCurrentFullScreenElement;
+    }
+    return false;
+  };
+
+  // Возвращает статус элемента
+  $.fn.fullScreenStatus = function() {
+    if(!$.support.fullScreen || this.length !== 1) {
+      return this;
+    }
+
+    return this.get(0) === $.fullScreenElement();
+  };
+
   // Показывает элемент в полноэкранном режиме
   $.fn.fullScreen = function() {
     if(!$.support.fullScreen || this.length !== 1) {
