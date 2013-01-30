@@ -45,6 +45,21 @@
     return false;
   };
 
+  // Events
+  if ($.support.fullScreen) {
+    var fsElement = null;
+    $(document).on('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
+      if ($.fullScreenStatus()) {
+        fsElement = $.fullScreenElement();
+        $(fsElement).trigger('fullScreenEnabled');
+      }
+      else {
+        $(fsElement).trigger('fullScreenDisabled');
+        fsElement = null;
+      }
+    });
+  }
+
   // Возвращает статус элемента
   $.fn.fullScreenStatus = function() {
     if(!$.support.fullScreen || this.length !== 1) {
@@ -78,15 +93,11 @@
     }
 
     var $self = this;
-    var fullScreenChange = function() {
-      if ($.fullScreenStatus()) {
-        $self.addClass('fullscreen');
-      }
-      else {
-        $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', fullScreenChange).removeClass('fullscreen');
-      }
-    };
-    $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', fullScreenChange);
+    $self.on('fullScreenEnabled', function() {
+      $self.addClass('fullscreen');
+    }).on('fullScreenDisabled', function() {
+      $self.removeClass('fullscreen');
+    });
 
     return $self;
   };
