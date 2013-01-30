@@ -63,7 +63,7 @@
       ajax: [], // Ссылки на слайды, которые должны загружаться Ajax'ом
       ajaxCache: true, // Кэшировать ли Ajax ответы
       // Переход между слайдами
-      effect: function(oldSlide, newSlide, index) {
+      effect: function(oldSlide, newSlide) {
         if (oldSlide) {
           oldSlide.fadeOut(200);
         }
@@ -125,7 +125,7 @@
         else {
           return null;
         }
-      };
+      }
 
       return $self._cache[index];
     };
@@ -285,7 +285,7 @@
           }
         };
 
-        var windowResize = function(event) {
+        var windowResize = function() {
           var width = $self.width();
           var height = $self.height();
 
@@ -297,7 +297,7 @@
           }
         };
 
-        $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', function(event) {
+        $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
           if ($.fullScreenStatus()) {
             $(document).bind('keyup', keyMaps);
             $(window).bind('resize', windowResize);
