@@ -35,13 +35,6 @@
     }, options);
 
     this._scale = function(width) {
-//      if (width / height > $self.options.proportions.w / $self.options.proportions.h) {
-//        // Ширина достаточная, трансформируем вписывая по высоте
-//      }
-//      else {
-//        // Ширины не хватает, трансвормируем вписывая по ширине с уменьшением высоты
-//      }
-
       var multiplier = width / $self.options.originalWidth;
       $self.container.transformScale(multiplier);
       return multiplier;
@@ -50,7 +43,8 @@
     // Настраиваем контейнер
     this.container.css({
       width: $self.options.originalWidth + 'px',
-      height: ($self.options.originalWidth * $self.options.proportions.h / $self.options.proportions.w) + 'px'
+      height: ($self.options.originalWidth * $self.options.proportions.h / $self.options.proportions.w) + 'px',
+      left: -parseInt($self.options.originalWidth / 2) + 'px'
     });
 
     // Настраиваем слайдер
@@ -220,13 +214,25 @@
               };
 
               var windowResize = function(event) {
+                if ($self.hasClass('fullscreen')) {
+                  var width = $self.width();
+                  var height = $self.height();
 
+                  if (width / height > $self.options.proportions.w / $self.options.proportions.h) {
+                    var scaleWidth = height * $self.options.proportions.w / $self.options.proportions.h;
+                    $self._scale(scaleWidth);
+                  }
+                  else {
+                    $self._scale(width);
+                  }
+                }
               };
 
               var disableFullscreenEvents = function() {
                 if (!$.fullScreenStatus()) {
                   $(document).unbind('keyup', keyMaps);
                   $(window).unbind('resize', windowResize);
+                  $self._scale($self.options.width);
                   $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableFullscreenEvents);
                 }
               };
