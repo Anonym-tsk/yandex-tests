@@ -19,14 +19,15 @@
   border: none;
 }
 .slider-container {
-  position: relative;
-  margin-left: 50%;
+  position: absolute;
+  margin: 50% 0 0 50%;
+  top: -375px;
   left: -500px;
-  -webkit-transform-origin: 50% 0%;
-  -moz-transform-origin: 50% 0%;
-  -ms-transform-origin: 50% 0%;
-  -o-transform-origin: 50% 0%;
-  transform-origin: 50% 0%;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
 }
 
 .slider h1,

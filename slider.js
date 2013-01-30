@@ -8,17 +8,13 @@
 
     var $self = this;
 
-    // Оборачиваем слайды в контейнер
-    $self.wrapInner('<div class="slider-container"/>');
-    this.container = $self.children('.slider-container');
-
     // Настройки по-умолчанию
     this.options = $.extend({
       items: '.slide', // Селектор элементов-слайдов
       firstSlide: 0, // Индекс первого слайда
       width: 400, // Ширина слайдера при отображении на странице (px)
       originalWidth: 1000, // Ширина слайда (px)
-      proportions: {w: 4, h: 3}, // Пропорции слайдера
+      proportions: 4/3, // Пропорции слайдера
       backgroundFullScreen: '#222', // Фон полноэкранного слайдера
       background: '#fff', // Фон слайда
       hideControls: false, // Скрыть элементы управления
@@ -35,26 +31,9 @@
       }
     }, options);
 
-    this._scale = function(width) {
-      var multiplier = width / $self.options.originalWidth;
-      $self.container.transformScale(multiplier);
-      return multiplier;
-    };
-
-    // Настраиваем контейнер
-    this.container.css({
-      width: $self.options.originalWidth + 'px',
-      height: ($self.options.originalWidth * $self.options.proportions.h / $self.options.proportions.w) + 'px',
-      left: -parseInt($self.options.originalWidth / 2) + 'px',
-      background: $self.options.background
-    });
-
-    // Настраиваем слайдер
-    this.addClass('slider').css({
-      width: $self.options.width + 'px',
-      height: ($self.options.width * $self.options.proportions.h / $self.options.proportions.w) + 'px',
-      background: $self.options.backgroundFullScreen
-    })._scale($self.options.width);
+    // Оборачиваем слайды в контейнер
+    $self.wrapInner('<div class="slider-container"/>');
+    this.container = $self.children('.slider-container');
 
     // Настраиваем слайды
     this.slides = $self.container.children($self.options.items).addClass('slider-item');
@@ -68,6 +47,29 @@
     // Для кэша слайдов
     this._cache = [];
 
+    // Получает слайд Ajax'ом
+    this._getAgaxSlide = function(ajaxIndex) {
+      $self.trigger('beforeAjaxSlide');
+
+      var slideContent = '<p>Error loading slide</p>';
+      $.ajax({
+        url: $self.options.ajax[ajaxIndex],
+        async: false,
+        cache: $self.options.ajaxCache
+      }).done(function(data) {
+        slideContent = data;
+      });
+
+      // Добавляем новый слайд
+      var result = $('<div/>', {
+        'class': 'slider-item',
+        'html': slideContent
+      }).appendTo($self.container);
+
+      $self.trigger('afterAjaxSlide');
+      return result;
+    };
+
     // Получает слайд по номеру и кэширует его
     this._getSlide = function(index) {
       if (typeof $self._cache[index] == 'undefined') {
@@ -75,34 +77,11 @@
         if (index < $self.localCount) {
           $self._cache[index] = $self.slides.eq(index);
         }
+        else if (index < $self.slideCount) {
+          $self._cache[index] = $self._getAgaxSlide(index - $self.localCount);
+        }
         else {
-          // Прячем контролы на время выполнения запроса
-          if (typeof $self.controls != 'undefined') {
-            $self.controls.hide();
-          }
-
-          var ajaxIndex = index - $self.localCount;
-          var slideContent;
-          $.ajax({url: $self.options.ajax[ajaxIndex], async: false, cache: $self.options.ajaxCache})
-            .done(function(data) {
-              slideContent = data;
-            })
-            .fail(function() {
-              slideContent = '<p>Error loading slide</p>';
-            })
-            .always(function() {
-              // Добавляем новый слайд
-              var $slide = $('<div/>', {
-                'class': 'slider-item',
-                'html': slideContent
-              }).appendTo($self.container);
-              $self._cache[index] = $slide;
-
-              // Возвращаем контролы в любом случае
-              if (typeof $self.controls != 'undefined') {
-                $self.controls.show();
-              }
-            });
+          return null;
         }
       };
 
@@ -117,11 +96,8 @@
       var newSlide = $self._getSlide(index);
       $self.options.effect(oldSlide, newSlide, index);
 
-      // Изменяем значение в селекте, если контролы не скрыты
-      if (typeof $self.slideSelector != 'undefined') {
-        $self.slideSelector.val(index);
-      }
       $self.currentIndex = parseInt(index);
+      $self.trigger('afterShowSlide');
       return $self.currentIndex;
     };
 
@@ -143,6 +119,13 @@
       return $self.currentIndex;
     };
 
+    // Масштабирует слайдер
+    this._scale = function(width) {
+      var multiplier = width / $self.options.originalWidth;
+      $self.container.transformScale(multiplier);
+      return $self;
+    };
+
     // Создает стандартные контролы
     this._createControls = function() {
       $self.controls = $('<div/>', {
@@ -153,7 +136,7 @@
         'class': 'slider-prev',
         'href': '#prev',
         'title': 'Previous slide (←)',
-        html: '&larr;',
+        html: '←',
         click: function(event) {
           $self.goPrev();
           event.preventDefault();
@@ -180,7 +163,7 @@
         'class': 'slider-next',
         'href': '#next',
         'title': 'Next slide (→)',
-        html: '&rarr;',
+        html: '→',
         click: function(event) {
           $self.goNext();
           event.preventDefault();
@@ -195,55 +178,6 @@
           'title': 'Fullscreen mode (F)',
           html: '#',
           click: function(event) {
-            if (!$.fullScreenStatus()) {
-              var keyMaps = function(event) {
-                var RIGHT = 39,
-                  LEFT = 37,
-                  F = 70,
-                  SPACE = 32;
-                switch (event.which) {
-                  case RIGHT:
-                  case SPACE:
-                    $self.goNext();
-                    break;
-                  case LEFT:
-                    $self.goPrev();
-                    break;
-                  case F:
-                    $self.fullScreen();
-                    break;
-                }
-              };
-
-              var windowResize = function(event) {
-                if ($self.hasClass('fullscreen')) {
-                  var width = $self.width();
-                  var height = $self.height();
-
-                  if (width / height > $self.options.proportions.w / $self.options.proportions.h) {
-                    var scaleWidth = height * $self.options.proportions.w / $self.options.proportions.h;
-                    $self._scale(scaleWidth);
-                  }
-                  else {
-                    $self._scale(width);
-                  }
-                }
-              };
-
-              var disableFullscreenEvents = function() {
-                if (!$.fullScreenStatus()) {
-                  $(document).unbind('keyup', keyMaps);
-                  $(window).unbind('resize', windowResize);
-                  $self._scale($self.options.width);
-                  $self.unbind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableFullscreenEvents);
-                }
-              };
-
-              $(document).bind('keyup', keyMaps);
-              $(window).bind('resize', windowResize);
-              $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', disableFullscreenEvents);
-            }
-
             $self.fullScreen();
             event.preventDefault();
             event.stopPropagation();
@@ -254,9 +188,95 @@
       $self.controls.appendTo($self);
     };
 
-    // Создаем контролы
+    // Настраиваем контейнер
+    this.container.css({
+      width: $self.options.originalWidth + 'px',
+      height: ($self.options.originalWidth / $self.options.proportions) + 'px',
+      top: -parseInt($self.options.originalWidth / (2 * $self.options.proportions)) + 'px',
+      left: -parseInt($self.options.originalWidth / 2) + 'px',
+      background: $self.options.background
+    });
+
+    // Настраиваем слайдер
+    this.addClass('slider').css({
+      width: $self.options.width + 'px',
+      height: ($self.options.width / $self.options.proportions) + 'px',
+      background: $self.options.backgroundFullScreen
+    })._scale($self.options.width);
+
+    // Элементы управления и обработчики событий
     if (!this.options.hideControls) {
       this._createControls();
+
+      // Обновляем значение в селекте после смены слайда
+      this.bind('afterShowSlide', function() {
+        $self.slideSelector.val($self.currentIndex);
+      });
+
+      if (this.options.ajax.length > 0) {
+        // Прячем контролы на время выполнения запроса
+        this.bind('beforeAjaxSlide', function() {
+          $self.controls.hide();
+        });
+        this.bind('afterAjaxSlide', function() {
+          $self.controls.show();
+        });
+      }
+
+      if ($.support.fullScreen) {
+        var keyMaps = function(event) {
+          var RIGHT = 39, LEFT = 37, F = 70, SPACE = 32;
+          switch (event.which) {
+            case RIGHT:
+            case SPACE:
+              $self.goNext();
+              event.preventDefault();
+              break;
+            case LEFT:
+              $self.goPrev();
+              event.preventDefault();
+              break;
+            case F:
+              $self.fullScreen();
+              event.preventDefault();
+              break;
+          }
+        };
+
+        var windowResize = function(event) {
+          var width = $self.width();
+          var height = $self.height();
+
+          if (width / height > $self.options.proportions) {
+            $self._scale(height * $self.options.proportions);
+          }
+          else {
+            $self._scale(width);
+          }
+        };
+
+        $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', function(event) {
+          if ($.fullScreenStatus()) {
+            $(document).bind('keyup', keyMaps);
+            $(window).bind('resize', windowResize);
+
+            var width = $(window).width();
+            var height = $(window).height();
+
+            if (width / height > $self.options.proportions) {
+              $self._scale(height * $self.options.proportions);
+            }
+            else {
+              $self._scale(width);
+            }
+          }
+          else {
+            $(document).unbind('keyup', keyMaps);
+            $(window).unbind('resize', windowResize);
+            $self._scale($self.options.width);
+          }
+        });
+      }
     }
 
     // Показываем первый слайд
