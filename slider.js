@@ -19,7 +19,8 @@
       width: 400, // Ширина слайдера при отображении на странице (px)
       originalWidth: 1000, // Ширина слайда (px)
       proportions: {w: 4, h: 3}, // Пропорции слайдера
-      background: '#fff', // Фон слайдера
+      backgroundFullScreen: '#222', // Фон полноэкранного слайдера
+      background: '#fff', // Фон слайда
       hideControls: false, // Скрыть элементы управления
       ajax: [], // Ссылки на слайды, которые должны загружаться Ajax'ом
       ajaxCache: true, // Кэшировать ли Ajax ответы
@@ -44,14 +45,15 @@
     this.container.css({
       width: $self.options.originalWidth + 'px',
       height: ($self.options.originalWidth * $self.options.proportions.h / $self.options.proportions.w) + 'px',
-      left: -parseInt($self.options.originalWidth / 2) + 'px'
+      left: -parseInt($self.options.originalWidth / 2) + 'px',
+      background: $self.options.background
     });
 
     // Настраиваем слайдер
     this.addClass('slider').css({
       width: $self.options.width + 'px',
       height: ($self.options.width * $self.options.proportions.h / $self.options.proportions.w) + 'px',
-      background: $self.options.background
+      background: $self.options.backgroundFullScreen
     })._scale($self.options.width);
 
     // Настраиваем слайды
