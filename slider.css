@@ -23,6 +23,11 @@
   margin: -375px 0 0 -500px;
   top: 50%;
   left: 50%;
+
+  margin: 0\0/ !important;
+  top: 0\0/;
+  left: 0\0/;
+
   -webkit-transform-origin: 50% 50%;
   -moz-transform-origin: 50% 50%;
   -ms-transform-origin: 50% 50%;
@@ -85,8 +90,9 @@
   line-height: 1.24em;
   padding: 0.5em 1em;
   position: relative;
+  position: static\0/;
 }
-.slider pre:before {
+.slider pre::before {
   content: "Source code";
   position: absolute;
   top: 0.5em;
@@ -96,12 +102,13 @@
 }
 .slider blockquote {
   position: relative;
+  position: static\0/;
   margin: 0.34em 0 1em 0;
   font-style: italic;
   color: #666;
   padding: 0 0 0 2em;
 }
-.slider blockquote:before {
+.slider blockquote::before {
   content: "”";
   position: absolute;
   left: 0;
@@ -187,6 +194,8 @@
   margin: 0;
   padding: 1.5em 2.2em;
   position: absolute;
+  position: static\0/;
+  height: 100%;
   top: 0;
   bottom: 0;
   left: 0;
