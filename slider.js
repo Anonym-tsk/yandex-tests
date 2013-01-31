@@ -234,8 +234,8 @@
     this.container.css({
       width: $self.options.originalWidth + 'px',
       height: ($self.options.originalWidth / $self.options.proportions) + 'px',
-      top: -parseInt($self.options.originalWidth / (2 * $self.options.proportions)) + 'px',
-      left: -parseInt($self.options.originalWidth / 2) + 'px',
+      marginTop: -parseInt($self.options.originalWidth / (2 * $self.options.proportions)) + 'px',
+      marginLeft: -parseInt($self.options.originalWidth / 2) + 'px',
       background: $self.options.background
     });
 
@@ -298,26 +298,23 @@
         }
       };
 
-      $self.bind('fullscreenchange mozfullscreenchange webkitfullscreenchange', function() {
-        if ($.fullScreenStatus()) {
-          $(document).bind('keyup', keyMaps);
-          $(window).bind('resize', windowResize);
+      $self.bind('fullScreenEnabled', function() {
+        $(document).bind('keyup', keyMaps);
+        $(window).bind('resize', windowResize);
 
-          var width = $(window).width();
-          var height = $(window).height();
+        var width = $(window).width();
+        var height = $(window).height();
 
-          if (width / height > $self.options.proportions) {
-            $self._scale(height * $self.options.proportions);
-          }
-          else {
-            $self._scale(width);
-          }
+        if (width / height > $self.options.proportions) {
+          $self._scale(height * $self.options.proportions);
         }
         else {
-          $(document).unbind('keyup', keyMaps);
-          $(window).unbind('resize', windowResize);
-          $self._scale($self.options.width);
+          $self._scale(width);
         }
+      }).bind('fullScreenDisabled', function() {
+        $(document).unbind('keyup', keyMaps);
+        $(window).unbind('resize', windowResize);
+        $self._scale($self.options.width);
       });
     }
 

@@ -20,9 +20,9 @@
 }
 .slider-container {
   position: absolute;
-  margin: 50% 0 0 50%;
-  top: -375px;
-  left: -500px;
+  margin: -375px 0 0 -500px;
+  top: 50%;
+  left: 50%;
   -webkit-transform-origin: 50% 50%;
   -moz-transform-origin: 50% 50%;
   -ms-transform-origin: 50% 50%;
