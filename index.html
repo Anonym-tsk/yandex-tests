@@ -197,7 +197,12 @@
       $('.current').text(current);
     });
     $('.fs').click(function() {
-      slider3.fullScreen();
+      if ($.support.fullScreen) {
+        slider3.fullScreen();
+      }
+      else {
+        alert('Ваш браузер не поддерживает полноэкранный режим');
+      }
     });
 
     $('#slider-4').slider({
