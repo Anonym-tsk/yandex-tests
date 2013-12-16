@@ -1,0 +1,23 @@
+$star-width: 16px
+$star-height: 16px
+$star-indent: 2px
+
+.stars
+  overflow: hidden
+  width: ($star-width + $star-indent) * 5
+.stars-star
+  display: block
+  float: right
+  background-repeat: no-repeat
+  background-image: url(data:image/gif;base64,R0lGODlhEAAwAOYAAKE3N8XFxemzG8yADefCWtSEhNBzc97e3uSvr8BgYOO4Q/fsvMVSUtbW1uK2NOS9Zvb29urLRtqpqe7u7t2oKfHcmt66uuzPea1GRvfp6ey8Iu3CMOnGQevNmc1sbPbhYvTf3/TZWvHOU+fn58daWtmdJc97e9eSkvfrtb9CQsJKSt+vMefEcuzHx+nHTO/FKe/VTPz47+a9QvLVWMxmZszMzPv12Pv15ua/OeiwJfHbot2qRfHcf71KStOPIqo/P+S7Su7DS+WtOO3Sq////9iMjNN8fPTWQOrJgfHNL/LQRfXeXemzIPnu7vLWVe3QWu7DQdGLGenHbu3Ly+/IT+W2OO3OSe+9Ke/OKeq1K961MclgYOu9RO+1QvLcV/DLOffenOi6uuvOh9uUlOy/SLRMTNaZK/LfsLhERPfWSv///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEHAGoALAAAAAAQADAAAAf/gGqCg2oQE4SIiA0NiY0TiyONiouMkoIjDQcHmYkTmoublKAjEJuan6KpaqCiNa41izVEgqyxrrEQhK2vDTW5hJi9vJyIoa2LicapNYmUNZqvzIiukYMjNQGdkoeWIFOWiAY04IMtNDQI5Go0BgYk5Ag0RkZbRYktYwZbNCYeW+4MaBRAkKGfgXlGPDBgQMKDPxIMVKhxWIAGCYgRVaigEbGJoHNGMGpMwVGFx0H/SqpIQTJFBkQS/mlcedFEoiLnGOyLSCJBIgMe2l08R6JMooYMUhQ4gQYNgx+JNI4hJAEDgERhJFkAZ2OBOkFPInxdYMVKBXURnDjBQQ6MlRAhjDhcSISCxxMOb5V8EYHDARApOm48geFliWElL15soBKES5UVK9SIgPHhSJIkiTVoYMJFyIoYglxYWXL5hWYBZIRQAD1IxgzEpgUI4ELhBqIKHGaY1iCgSpUHiS5EiLABCpQsOarsSESAiggqMqpwcWwmkQIqVSiwQFKihJAoiSCLIdTBx4BEZyQNGRQIADs=)
+  background-position: 0 0
+  width: $star-width
+  height: $star-height
+  cursor: pointer
+  border-radius: 50%
+  margin: 0
+  padding: 0 $star-indent 0 0
+  &.active, &.active ~ .stars-star
+    background-position: 0 -1 * $star-height
+  &:hover, &.active:hover, &:hover ~ .stars-star, &.active:hover ~ .stars-star
+    background-position: 0 -2 * $star-height !important
