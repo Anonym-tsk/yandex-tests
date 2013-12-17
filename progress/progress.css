@@ -1,0 +1,33 @@
+.progress {
+  background: white;
+  width: 200px;
+  height: 16px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 4px #cccccc; }
+  .progress:after {
+    content: attr(data-value) attr(data-postfix);
+    display: block;
+    position: absolute;
+    width: 200px;
+    height: 16px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 17px;
+    color: #444444;
+    font-weight: bold;
+    left: 0;
+    top: 0; }
+
+.progress-bar {
+  display: block;
+  position: absolute;
+  background: #b4e391;
+  background: linear-gradient(to bottom, #b4e391 0%, #64af2c 50%, #b4e391 100%);
+  width: 200px;
+  height: 16px;
+  margin-left: -200px;
+  left: 0;
+  top: 0;
+  transition: left ease-in-out 0.3s; }

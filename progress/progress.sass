@@ -1,0 +1,48 @@
+// Default skin
+$progress-width: 200px
+$progress-height: 16px
+$progress-background: #FFF
+$progress-foreground: #b4e391
+$font-color: #444
+$shadow-color: #ccc
+
+// Custom skin
+//$progress-width: 300px
+//$progress-height: 20px
+//$progress-background: #444
+//$progress-foreground: #fb0011
+//$font-color: #fff
+//$shadow-color: #000
+
+.progress
+  background: $progress-background
+  width: $progress-width
+  height: $progress-height
+  position: relative
+  border-radius: $progress-height / 2
+  overflow: hidden
+  box-shadow: inset 0 1px 4px $shadow-color
+  &:after
+    content: attr(data-value) attr(data-postfix)
+    display: block
+    position: absolute
+    width: $progress-width
+    height: $progress-height
+    text-align: center
+    font-size: 13px
+    line-height: $progress-height + 1
+    color: $font-color
+    font-weight: bold
+    left: 0
+    top: 0
+.progress-bar
+  display: block
+  position: absolute
+  background: $progress-foreground
+  background: linear-gradient(to bottom, $progress-foreground 0%, darken($progress-foreground, 30%) 50%, $progress-foreground 100%)
+  width: $progress-width
+  height: $progress-height
+  margin-left: -1 * $progress-width
+  left: 0
+  top: 0
+  transition: left ease-in-out .3s
