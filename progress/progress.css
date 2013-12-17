@@ -23,7 +23,7 @@
 .progress-bar {
   display: block;
   position: absolute;
-  background: #b4e391;
+  background-color: #b4e391;
   background: linear-gradient(to bottom, #b4e391 0%, #64af2c 50%, #b4e391 100%);
   width: 200px;
   height: 16px;
