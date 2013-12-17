@@ -1,6 +1,8 @@
 .stars {
   overflow: hidden;
-  width: 140px; }
+  float: none; }
+  .stars .wrapper {
+    float: left; }
 
 .stars-star {
   display: block;
