@@ -1,0 +1,36 @@
+$icon-width: 128px
+$icon-height: 128px
+
+.browser-icons
+  width: 100%
+  overflow: hidden
+.browser-icons-icon
+  float: left
+  width: $icon-width
+  height: $icon-height
+  line-height: $icon-width
+  text-align: center
+  img
+    display: block
+  .text
+    font-size: 20px
+    line-height: 24px
+    font-weight: bold
+    vertical-align: middle
+    display: inline-block
+  &:last-child
+    float: right
+.browser-icons-chrome
+  color: #DCBC37
+  > .ch
+    color: #5BB23B
+  > .ro
+    color: #D6392E
+.browser-icons-firefox
+  color: #D9692E
+.browser-icons-opera
+  color: #C13229
+.browser-icons-safari
+  color: #313434
+.browser-icons-ie
+  color: #2A84D4
