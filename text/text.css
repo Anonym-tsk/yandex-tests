@@ -1,0 +1,31 @@
+@charset "UTF-8";
+.demo-text {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  line-height: 1.4em;
+  overflow: hidden; }
+  .demo-text .col-1, .demo-text .col-2, .demo-text h1 {
+    width: 45%;
+    padding: 0 4% 0 1%; }
+  .demo-text .col-1, .demo-text .col-2 {
+    float: left; }
+  .demo-text .col-2 {
+    padding: 0 1% 0 4%; }
+  .demo-text h1 {
+    font-weight: normal;
+    line-height: 1.1em;
+    margin: 0.3em 0; }
+  .demo-text p {
+    text-indent: 1em;
+    margin: 1em 0; }
+  .demo-text abbr {
+    border-bottom: 1px black dashed; }
+  .demo-text ul {
+    padding: 0;
+    margin: 1em 0 1em -1em; }
+    .demo-text ul li {
+      list-style-type: none; }
+      .demo-text ul li:before {
+        display: inline-block;
+        width: 1em;
+        content: "–"; }
