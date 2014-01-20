@@ -21,9 +21,9 @@
 
 .browser-icons-chrome {
   color: #dcbc37; }
-  .browser-icons-chrome > .ch {
+  .browser-icons-chrome .ch {
     color: #5bb23b; }
-  .browser-icons-chrome > .ro {
+  .browser-icons-chrome .ro {
     color: #d6392e; }
 
 .browser-icons-firefox {
