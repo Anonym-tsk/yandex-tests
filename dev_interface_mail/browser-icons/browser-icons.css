@@ -1,0 +1,39 @@
+.browser-icons {
+  width: 100%;
+  overflow: hidden; }
+
+.browser-icons-icon {
+  float: left;
+  width: 128px;
+  height: 128px;
+  line-height: 128px;
+  text-align: center; }
+  .browser-icons-icon img {
+    display: block; }
+  .browser-icons-icon .text {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: bold;
+    vertical-align: middle;
+    display: inline-block; }
+  .browser-icons-icon:last-child {
+    float: right; }
+
+.browser-icons-chrome {
+  color: #dcbc37; }
+  .browser-icons-chrome .ch {
+    color: #5bb23b; }
+  .browser-icons-chrome .ro {
+    color: #d6392e; }
+
+.browser-icons-firefox {
+  color: #d9692e; }
+
+.browser-icons-opera {
+  color: #c13229; }
+
+.browser-icons-safari {
+  color: #313434; }
+
+.browser-icons-ie {
+  color: #2a84d4; }
